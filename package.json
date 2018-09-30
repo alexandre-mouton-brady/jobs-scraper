@@ -1,0 +1,13 @@
+{
+	"name": "scraper",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"start": "node index"
+	},
+	"dependencies": {
+		"esm": "^3.0.84",
+		"puppeteer": "^1.8.0"
+	}
+}
