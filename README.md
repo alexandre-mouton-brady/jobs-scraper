@@ -1,8 +1,22 @@
 # Jobs Scraper
 
-## Goal
+⚗️ **EXPERIMENTAL** ⚗️ This is a script that will scrap jobs on a list of tech companies and save them in JSON files. The idea is to either store them in a DB afterwards or serve them directly. A front-end app will be able to consume them.
 
-[EXPERIMENTAL] This is a script that will scrap jobs on a list of tech companies and save them in JSON files. The idea is to either store them in a DB afterwards or serve them directly. A front-end app will be able to consume them.
+For now the list of jobs are IT related, in Sweden for the following companies:
+
+-   Spotify
+-   iZettle
+-   Toca Boca
+-   Tobii
+-   King
+
+## Running
+
+-   Clone de repo `git clone https://github.com/alexandre-mouton-brady/jobs-scraper.git`
+-   cd into it `cd jobs-scraper`
+-   Install the dependencies `yarn` or `npm install`
+-   Start the script `yarn start` or `npm run start` (It might takes a few minutes)
+-   Once complete, if no errors happened (they are not handled really well as of now), your data should be saved to the `data` folder
 
 ## Built With
 
