@@ -1,5 +1,5 @@
 import { promisify } from 'util';
-import { writeFile, existsSync, mkdir as md } from 'fs';
+import { writeFile, existsSync, mkdir as md, readdir, readFile } from 'fs';
 import { resolve } from 'url';
 
 /**
@@ -16,3 +16,9 @@ export const write = promisify(writeFile);
 export const exists = existsSync;
 
 export const mkdir = promisify(md);
+
+export const readDir = promisify(readdir);
+
+export const openFile = promisify(readFile);
+
+export const log = v => console.log(v);

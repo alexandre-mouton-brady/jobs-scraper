@@ -1,3 +1,4 @@
+import consola from 'consola';
 import { file, write } from '../utils';
 
 /**
@@ -16,55 +17,70 @@ import { file, write } from '../utils';
  * @param {string} url - Url where the job listing is
  * @param {Selectors} selectors - List of CSS selectors
  *
- * TODO: Handle promises fail
  * TODO: Explain the code more
- * TODO: More logs
  */
 export function createScraper(name, url, selectors) {
 	return async function(page) {
-		const fileName = file(name);
+		try {
+			consola.start(`Scraping for ${name} jobs\n`);
 
-		/** STEP 1: Navigate to page */
-		await page.goto(url, { waitUntil: 'networkidle2' });
+			const fileName = file(name);
 
-		/** STEP 2: Compute all the links */
-		const jobsList = await page.evaluate(
-			({ links }) => Array.from(document.querySelectorAll(links)).map(a => a.href),
-			selectors,
-		);
+			consola.info(`Opening ${url}`);
+			/** STEP 1: Navigate to page */
+			await page.goto(url, { waitUntil: 'networkidle2' });
 
-		const data = {
-			jobs: [],
-			updated: Date.now(),
-		};
-
-		for (let link of jobsList) {
-			/** STEP 3: Open each link */
-			await page.goto(link, { waitUntil: 'networkidle2' });
-
-			const t = await page.evaluate(
-				({ link, title, description, location }) => ({
-					title: document.querySelector(title).innerText,
-					location: document.querySelector(location).innerText,
-					description: document.querySelector(description).innerText,
-					link,
-				}),
+			consola.info('Scraping job links');
+			/** STEP 2: Compute all the links */
+			const jobsList = await page.evaluate(
+				({ links }) => Array.from(document.querySelectorAll(links)).map(a => a.href),
 				selectors,
 			);
 
-			/** STEP 4: Push the job in the array of jobs */
-			data.jobs.push(t);
-		}
+			const jobsNumber = jobsList.length;
 
-		try {
+			consola.info(`${jobsNumber} job links found\n`);
+
+			const data = {
+				jobs: [],
+				updated: Date.now(),
+			};
+
+			for (let [i, link] of jobsList.entries()) {
+				consola.info(`Processing file ${i + 1}/${jobsNumber}`);
+				/** STEP 3: Open each link */
+				await page.goto(link, { waitUntil: 'networkidle2' });
+
+				const t = await page.evaluate(({ link, title, description, location }) => {
+					const [t, l, d] = [
+						document.querySelector(title),
+						document.querySelector(location),
+						document.querySelector(description),
+					];
+
+					return {
+						title: t ? t.innerText : '',
+						location: l ? l.innerText : '',
+						description: d ? d.innerText : '',
+						link,
+					};
+				}, selectors);
+
+				/** STEP 4: Push the job in the array of jobs */
+				data.jobs.push(t);
+			}
+
+			console.log('');
+			consola.info(`Writing results to ${fileName}\n`);
 			/** STEP 5: Write the array of jobs to file */
 			await write(fileName, JSON.stringify(data, null, 4));
 
-			console.log(`${name} jobs updated on ${new Date(data.updated)}`);
-		} catch (e) {
-			throw e;
-		}
+			consola.success(`${name} jobs finished\n`);
+			console.log('-------\n');
 
-		return true;
+			return true;
+		} catch (e) {
+			consola.error(e);
+		}
 	};
 }
