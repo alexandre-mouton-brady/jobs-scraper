@@ -4,7 +4,7 @@ import { createScraper } from './scrapper';
  * TODO: Create a config file instead of writing those hard coded
  */
 
-export const iZettle = createScraper(
+const iZettle = createScraper(
 	'iZettle',
 	'https://jobs.izettle.com/jobs?department_id=14514&location_id=17585',
 	{
@@ -15,7 +15,7 @@ export const iZettle = createScraper(
 	},
 );
 
-export const king = createScraper(
+const king = createScraper(
 	'king',
 	'https://king.com/jobs?locations=stockholm&roles=all&keywords=web&searchInDescription=1',
 	{
@@ -26,7 +26,7 @@ export const king = createScraper(
 	},
 );
 
-export const spotify = createScraper(
+const spotify = createScraper(
 	'spotify',
 	'https://www.spotifyjobs.com/search-jobs/#search=Web+Developer&category=engineering-it&location=sweden',
 	{
@@ -37,7 +37,7 @@ export const spotify = createScraper(
 	},
 );
 
-export const tobii = createScraper(
+const tobii = createScraper(
 	'tobii',
 	'https://careers.tobii.com/jobs?department_id=22610&location_id=23092',
 	{
@@ -48,9 +48,17 @@ export const tobii = createScraper(
 	},
 );
 
-export const tocaboca = createScraper('tocaboca', 'https://tocaboca.com/careers/', {
+const tocaboca = createScraper('tocaboca', 'https://tocaboca.com/careers/', {
 	links: 'div.open-positions a',
 	title: '.job-header h1',
 	location: 'ul.job-attributes',
 	description: 'div.description',
 });
+
+export default {
+	iZettle,
+	king,
+	spotify,
+	tobii,
+	tocaboca,
+};

@@ -22,3 +22,9 @@ export const readDir = promisify(readdir);
 export const openFile = promisify(readFile);
 
 export const log = v => console.log(v);
+
+export const generateId = _ =>
+	'_' +
+	Math.random()
+		.toString(36)
+		.substr(2, 9);

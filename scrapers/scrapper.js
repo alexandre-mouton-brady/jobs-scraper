@@ -1,5 +1,5 @@
 import consola from 'consola';
-import { file, write } from '../utils';
+import { file, write, generateId } from '../utils';
 
 /**
  * This is a factory function to create a scraper.
@@ -33,7 +33,10 @@ export function createScraper(name, url, selectors) {
 			consola.info('Scraping job links');
 			/** STEP 2: Compute all the links */
 			const jobsList = await page.evaluate(
-				({ links }) => Array.from(document.querySelectorAll(links)).map(a => a.href),
+				({ links }) =>
+					Array.from(document.querySelectorAll(links)).map(
+						a => a.href,
+					),
 				selectors,
 			);
 
@@ -51,27 +54,31 @@ export function createScraper(name, url, selectors) {
 				/** STEP 3: Open each link */
 				await page.goto(link, { waitUntil: 'networkidle2' });
 
-				const t = await page.evaluate(({ link, title, description, location }) => {
-					const [t, l, d] = [
-						document.querySelector(title),
-						document.querySelector(location),
-						document.querySelector(description),
-					];
+				const t = await page.evaluate(
+					({ link, title, description, location }) => {
+						const [t, l, d] = [
+							document.querySelector(title),
+							document.querySelector(location),
+							document.querySelector(description),
+						];
 
-					return {
-						title: t ? t.innerText : '',
-						location: l ? l.innerText : '',
-						description: d ? d.innerText : '',
-						link,
-					};
-				}, selectors);
+						return {
+							title: t ? t.innerText : '',
+							location: l ? l.innerText : '',
+							description: d ? d.innerText : '',
+							link,
+						};
+					},
+					selectors,
+				);
 
 				/** STEP 4: Push the job in the array of jobs */
-				data.jobs.push(t);
+				data.jobs.push({ id: generateId(), ...t });
 			}
 
 			console.log('');
 			consola.info(`Writing results to ${fileName}\n`);
+
 			/** STEP 5: Write the array of jobs to file */
 			await write(fileName, JSON.stringify(data, null, 4));
 

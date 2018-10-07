@@ -8,7 +8,7 @@ export async function generateAll() {
 		const files = await readDir(DATA_DIR);
 
 		const all = {
-			jobs: [],
+			companies: [],
 			updated: Date.now(),
 		};
 
@@ -17,13 +17,17 @@ export async function generateAll() {
 
 			const content = await openFile(`${DATA_DIR}/${file}`);
 
-			const parsed = JSON.parse(content.toString());
-			const company = file.split('.')[0];
-			const jobs = parsed.jobs.map(job => ({ ...job, company }));
+			const { jobs } = JSON.parse(content.toString());
+			const name = file.split('.')[0];
+			const count = jobs.length;
 
-			all.jobs = [...all.jobs, ...jobs];
+			all.companies.push({
+				name,
+				jobs,
+				count,
+			});
 
-			consola.info(`${jobs.length} jobs from ${company} added`);
+			consola.info(`${count} jobs from ${name} added`);
 		}
 
 		console.log('');

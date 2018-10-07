@@ -9,6 +9,8 @@
 	"dependencies": {
 		"consola": "^1.4.3",
 		"esm": "^3.0.84",
+		"fastify": "^1.12.1",
+		"fastify-cors": "^0.1.0",
 		"puppeteer": "^1.8.0"
 	}
 }
