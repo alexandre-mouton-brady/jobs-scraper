@@ -4,13 +4,19 @@
 	"main": "index.js",
 	"license": "MIT",
 	"scripts": {
-		"start": "node index"
+		"start:dev": "nodemon index"
 	},
 	"dependencies": {
 		"consola": "^1.4.3",
 		"esm": "^3.0.84",
 		"fastify": "^1.12.1",
 		"fastify-cors": "^0.1.0",
-		"puppeteer": "^1.8.0"
+		"fastify-sequelize": "^1.0.4",
+		"puppeteer": "^1.8.0",
+		"sequelize": "^4.39.0",
+		"sqlite3": "^4.0.2"
+	},
+	"devDependencies": {
+		"nodemon": "^1.18.4"
 	}
 }

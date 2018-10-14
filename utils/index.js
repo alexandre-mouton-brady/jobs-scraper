@@ -11,6 +11,8 @@ export const file = name => `${DATA_DIR}/${name}.json`;
 
 export const DATA_DIR = resolve(__dirname, 'data');
 
+export const ASSETS_DIR = resolve(__dirname, 'assets');
+
 export const write = promisify(writeFile);
 
 export const exists = existsSync;
