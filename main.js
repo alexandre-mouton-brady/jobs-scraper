@@ -2,13 +2,18 @@ import puppeteer from 'puppeteer';
 import consola from 'consola';
 import fastify from 'fastify';
 import cors from 'fastify-cors';
-import { DATA_DIR, exists, mkdir, openFile, ASSETS_DIR } from './utils';
 import scrapers from './scrapers';
+import staticFiles from 'fastify-static';
 import { Job, Company } from './db';
+import { join } from 'path';
 
 const app = fastify();
 
-app.register(cors, { origin: 'http://localhost:1234' });
+app.register(cors, { origin: 'http://192.168.1.38:8080' });
+app.register(staticFiles, {
+	root: join(__dirname, 'assets'),
+	prefix: '/imgs/',
+});
 
 app.get('/api/jobs', async _ => {
 	return await Job.findAll({ include: [Company] });
