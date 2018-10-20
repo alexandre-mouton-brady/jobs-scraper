@@ -7,7 +7,6 @@ import staticFiles from 'fastify-static';
 
 import scrapers from './scrapers';
 import { Job, Company, Log } from './db';
-import { canSync } from './middleware';
 
 const app = fastify();
 
@@ -32,8 +31,6 @@ app.get('/api/jobs/:company', async req => {
 		throw Error(`No scraper available for ${company}`);
 	}
 });
-
-app.use(['/api/sync', '/api/sync/*'], canSync);
 
 app.get('/api/sync', async req => {
 	const ip =
