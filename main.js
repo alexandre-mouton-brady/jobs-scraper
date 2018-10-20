@@ -2,10 +2,12 @@ import puppeteer from 'puppeteer';
 import consola from 'consola';
 import fastify from 'fastify';
 import cors from 'fastify-cors';
-import scrapers from './scrapers';
-import staticFiles from 'fastify-static';
-import { Job, Company } from './db';
 import { join } from 'path';
+import staticFiles from 'fastify-static';
+
+import scrapers from './scrapers';
+import { Job, Company, Log } from './db';
+import { canSync } from './middleware';
 
 const app = fastify();
 
@@ -31,7 +33,31 @@ app.get('/api/jobs/:company', async req => {
 	}
 });
 
-app.get('/api/sync', async _ => {
+app.use(['/api/sync', '/api/sync/*'], canSync);
+
+app.get('/api/sync', async req => {
+	const ip =
+		req.headers['x-forwarded-for'] || req.req.connection.remoteAddress;
+
+	const yesterday = dayjs().subtract(1, 'day');
+	const latest = await Log.findOne({ order: [['createdAt', 'DESC']] });
+	const lastUpdate = latest ? dayjs(latest.createdAt) : null;
+
+	if (lastUpdate && lastUpdate.isAfter(yesterday)) {
+		return {
+			success: false,
+			error: {
+				data: {
+					lastUpdate,
+					timeLeft: lastUpdate
+						? lastUpdate.diff(yesterday, 'hours', true)
+						: null,
+				},
+				message: 'The database can only be updated once every day',
+			},
+		};
+	}
+
 	const browser = await puppeteer.launch();
 	const page = await browser.newPage();
 
@@ -41,26 +67,33 @@ app.get('/api/sync', async _ => {
 
 	await browser.close();
 
-	return await Job.findAll();
+	await Log.create({ ip });
+
+	return {
+		success: true,
+		jobs: await Job.findAll(),
+	};
 });
 
-app.get('/api/sync/:company', async req => {
-	const { company } = req.params;
+// TODO: See how to handle that case, is it really useful?
 
-	if (scrapers[company]) {
-		const browser = await puppeteer.launch();
-		const page = await browser.newPage();
+// app.get('/api/sync/:company', async req => {
+// 	const { company } = req.params;
 
-		await scrapers[company](page);
-		await browser.close();
+// 	if (scrapers[company]) {
+// 		const browser = await puppeteer.launch();
+// 		const page = await browser.newPage();
 
-		return await Job.findAll({
-			include: [{ model: Company, where: { slug: company } }],
-		});
-	} else {
-		throw Error(`No scraper available for ${company}`);
-	}
-});
+// 		await scrapers[company](page);
+// 		await browser.close();
+
+// 		return await Job.findAll({
+// 			include: [{ model: Company, where: { slug: company } }],
+// 		});
+// 	} else {
+// 		throw Error(`No scraper available for ${company}`);
+// 	}
+// });
 
 app.listen(3000, (err, address) => {
 	if (err) {
