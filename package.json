@@ -8,6 +8,7 @@
 	},
 	"dependencies": {
 		"consola": "^1.4.3",
+		"dayjs": "^1.7.7",
 		"esm": "^3.0.84",
 		"fastify": "^1.12.1",
 		"fastify-cors": "^0.1.0",
