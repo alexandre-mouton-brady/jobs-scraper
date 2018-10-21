@@ -4,6 +4,7 @@ import fastify from 'fastify';
 import cors from 'fastify-cors';
 import { join } from 'path';
 import staticFiles from 'fastify-static';
+import dayjs from 'dayjs';
 
 import scrapers from './scrapers';
 import { Job, Company, Log } from './db';
@@ -47,7 +48,7 @@ app.get('/api/sync', async req => {
 				data: {
 					lastUpdate,
 					timeLeft: lastUpdate
-						? lastUpdate.diff(yesterday, 'hours', true)
+						? lastUpdate.diff(yesterday, 'hours')
 						: null,
 				},
 				message: 'The database can only be updated once every day',
