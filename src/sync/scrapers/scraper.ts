@@ -72,7 +72,7 @@ export function createScraper(name, slug, url, selectors) {
         }, selectors);
 
         /** STEP 4: Push the job in the array of jobs */
-        const job = await service.createJob({
+        await service.createJob({
           ...data,
           link,
           logo,

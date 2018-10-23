@@ -1,3 +1,4 @@
+import { SyncGateway } from './sync.gateway';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,7 +10,7 @@ export class SyncService {
   constructor(
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
     @InjectRepository(Log) private readonly logRepo: Repository<Log>,
-    @InjectRepository(Company)
+    @InjectRepository(Company) private readonly syncGateway: SyncGateway,
     private readonly companyRepo: Repository<Company>,
   ) {}
 
@@ -26,7 +27,8 @@ export class SyncService {
   }
 
   async createJob(job) {
-    return await this.jobRepo.save(job);
+    const insertedJob = await this.jobRepo.save(job);
+    this.syncGateway.emit('job', insertedJob);
   }
 
   async getCompany({ name, url, logo, slug }) {
