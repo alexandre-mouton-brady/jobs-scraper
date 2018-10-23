@@ -33,8 +33,12 @@ export class SyncService {
   }
 
   async getCompany({ name, url, logo, slug }) {
-    const company = await this.companyRepo.create({ name, url, logo, slug });
-    await this.companyRepo.save(company);
+    let company = await this.companyRepo.findOne({ slug });
+
+    if (!company) {
+      company = await this.companyRepo.create({ name, url, logo, slug });
+      await this.companyRepo.save(company);
+    }
 
     return company;
   }
