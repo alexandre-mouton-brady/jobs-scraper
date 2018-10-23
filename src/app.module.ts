@@ -1,3 +1,4 @@
+import { SyncGateway } from './sync/sync.gateway';
 import { Module } from '@nestjs/common';
 import { JobsModule } from './jobs/jobs.module';
 import { SyncModule } from './sync/sync.module';
@@ -19,6 +20,6 @@ import { routes } from 'routes';
       synchronize: true,
     }),
   ],
-  providers: [JobsService, SyncService],
+  providers: [JobsService, SyncService, SyncGateway],
 })
 export class AppModule {}

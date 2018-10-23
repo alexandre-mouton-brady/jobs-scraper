@@ -10,8 +10,9 @@ export class SyncService {
   constructor(
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
     @InjectRepository(Log) private readonly logRepo: Repository<Log>,
-    @InjectRepository(Company) private readonly syncGateway: SyncGateway,
+    @InjectRepository(Company)
     private readonly companyRepo: Repository<Company>,
+    private readonly syncGateway: SyncGateway,
   ) {}
 
   async lastUpdate() {
