@@ -2,6 +2,15 @@ import * as consola from 'consola';
 import { SyncService } from 'sync/sync.service';
 
 const ASSETS_DIR = `${__dirname}/../../../assets`;
+
+export interface Selectors {
+  links: string;
+  title: string;
+  location: string;
+  description: string;
+  logo: string;
+}
+
 /**
  * This is a factory function to create a scraper.
  *
@@ -20,8 +29,13 @@ const ASSETS_DIR = `${__dirname}/../../../assets`;
  *
  * TODO: Explain the code more
  */
-export function createScraper(name, slug, url, selectors) {
-  return async function(page, service: SyncService) {
+export function createScraper(
+  name: string,
+  slug: string,
+  url: string,
+  selectors: Selectors,
+) {
+  return async (page, service: SyncService) => {
     try {
       const logo = `${name}-logo.png`;
 
@@ -52,7 +66,7 @@ export function createScraper(name, slug, url, selectors) {
 
       consola.info(`${jobsNumber} job links found\n`);
 
-      for (let [i, link] of jobsList.entries()) {
+      for (const [i, link] of jobsList.entries()) {
         consola.info(`Processing file ${i + 1}/${jobsNumber}`);
         /** STEP 3: Open each link */
         await page.goto(link, { waitUntil: 'networkidle2' });

@@ -32,6 +32,10 @@ export class SyncService {
     this.syncGateway.emit('job', insertedJob);
   }
 
+  jobFetchStart() {
+    this.syncGateway.emit('fetchStart');
+  }
+
   async getCompany({ name, url, logo, slug }) {
     let company = await this.companyRepo.findOne({ slug });
 

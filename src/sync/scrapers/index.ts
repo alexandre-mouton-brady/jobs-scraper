@@ -72,7 +72,7 @@ const tocaboca = createScraper(
 export default {
   // iZettle,
   // king,
-  spotify,
+  // spotify,
   // tobii,
-  // tocaboca,
+  tocaboca,
 };

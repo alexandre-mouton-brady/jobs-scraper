@@ -33,10 +33,12 @@ export class SyncController {
       };
     }
 
+    this.syncService.jobFetchStart();
+
     const browser = await puppeteer.launch();
     const page = await browser.newPage();
 
-    for (let company of Object.keys(scrapers)) {
+    for (const company of Object.keys(scrapers)) {
       await scrapers[company](page, this.syncService);
     }
 
@@ -46,7 +48,6 @@ export class SyncController {
 
     return {
       success: true,
-      jobs: await this.jobService.findAll(),
     };
   }
 }
