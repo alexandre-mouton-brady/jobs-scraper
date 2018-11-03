@@ -3,7 +3,7 @@ import * as dayjs from 'dayjs';
 import * as puppeteer from 'puppeteer';
 import scrapers from './scrapers';
 import { SyncService } from './sync.service';
-import { JobsService } from 'jobs/jobs.service';
+import { JobsService } from '../jobs/jobs.service';
 
 @Controller('sync')
 export class SyncController {

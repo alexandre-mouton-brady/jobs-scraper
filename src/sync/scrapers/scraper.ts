@@ -1,5 +1,5 @@
 import * as consola from 'consola';
-import { SyncService } from 'sync/sync.service';
+import { SyncService } from '../sync.service';
 
 const ASSETS_DIR = `${__dirname}/../../../assets`;
 
